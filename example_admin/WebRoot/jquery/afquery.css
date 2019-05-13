@@ -1,0 +1,33 @@
+
+/* 通用对话框定义 */
+.af-dialog {
+	display: none; /* 默认隐藏 */
+	position: fixed;
+	z-index: 1000; /*确保遮罩住所有后面的元素 */
+	left: 0px;
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	background-color: rgba(128,128,128,0.5); /* 半透明背景色 , 除老IE之外均支持 */	  
+}
+
+.af-dialog-frame {
+	position: relative;
+    width: 400px;
+    height: 200px;
+    margin: 50px auto;
+    padding: 0px;
+    background: #fff;    
+    border-radius: 2px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+}
+/* 右上角的关闭按钮, 绝对定位 */
+.af-dialog .close{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	border: 1px solid #fff;
+}	
+.af-dialog .close:hover{
+	border: 1px solid #ccc;
+}

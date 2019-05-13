@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery/afquery.js"></script>
+		<script type="text/javascript" src="exampleData.jsx"></script>
+		<style>
+			#main {
+				width: 1200px;
+				margin: 10px auto;
+				padding: 8px;
+			}
+			
+			#main .top h1 {
+				font-size: 44px;
+			}
+			
+			#main .content {
+				padding: 8px;
+				border-bottom: 2px solid #BBBBBB;
+			}
+			
+			#main .content p {
+				display: inline-block;
+				margin-right: 4px;
+				font-weight: 600;
+				font-size: 20px;
+				font-family: "楷体";
+				color: #444444;
+			}
+			
+			#main .content select {
+				width: 240px;
+				height: 36px;
+				padding: 4px;
+				margin-right: 5px;
+				line-height: 36px;
+				font-size: 16px;
+			}
+			
+			#main .content button {
+				margin: 0px 12px;
+				padding: 7px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			
+			#main .content button:hover {
+				border: 1px solid #309FE6;
+				background-color: #309FE6;
+			}
+			
+			#main .content span {
+				display: inline-block;
+				padding: 20px;
+				margin-right: 16px;
+				float: right;
+				font-size: 16px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="main">
+			<div class="top">
+				<h1> 在线题库 </h1>
+			</div>
+			<div class="content">
+				<p> 课程: </p>
+				<select class="example-course" onchange="M.chapterQuery(this)">
+				</select>
+				<p> 章节: </p>
+				<select class="example-chapter">
+				</select>
+				<button onclick="M.exampleQuery()"> 查找习题 </button>
+				<span> (* 请选择要查看的习题) </span>
+			</div>
+		</div>
+
+		<script>
+			var M = {};
+
+			M.init = function() {
+				M.showCourse();
+				$('#main .content .example-course').change();
+			}
+
+			M.showCourse = function() {
+				var tp = new AfTemplate('<option value="{#id}"> {#title} </option>');
+				var target = $('#main .content .example-course');
+				var len = exampleData[0].length;
+
+				for(var i = 0; i < len; i++) {
+					var row = exampleData[0][i];
+					target.append(tp.replace(row));
+				}
+			}
+
+			M.chapterQuery = function(thiz) {
+				var course = $(thiz).val();
+
+				var tp = new AfTemplate('<option value="{#id}"> {#number}: {#title} </option>');
+				var target = $('#main .content .example-chapter');
+				target.html('');
+
+				var len = exampleData[1].length;
+				for(var i = 0; i < len; i++) {
+					var it = exampleData[1][i];
+					if(course == it.course) {
+						target.append(tp.replace(it));
+					}
+				}
+			}
+
+			M.exampleQuery = function(thiz) {
+				var courseId = $('#main .content .example-course').val().trim();
+				var chapterId = $('#main .content .example-chapter').val().trim();
+				location.href = 'example_list.do?course=' + courseId + '&chapter=' + chapterId;
+			}
+
+			M.init();
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,75 @@
+<style>
+	#wn-dialog {
+		display: none;
+		position: fixed;
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+		background-color: rgba(128, 128, 128, 0.5);
+		z-index: 1000;
+	}
+	
+	#wn-dialog .dialog-content {
+		position: relative;
+		width: 500px;
+		height: 200px;
+		margin: 200px auto 0px auto;
+		padding: 20px;
+		background-color: white;
+		border: 1px solid #BBBBBB;
+		border-radius: 8px;
+		box-shadow: 0px 0px 20px #888888;
+	}
+	
+	#wn-dialog .dialog-content p {
+		margin-top: 20px;
+		font-size: 20px;
+	}
+	
+	#wn-dialog .dialog-content input {
+		width: 480px;
+		padding: 8px;
+		font-size: 20px;
+	}
+	
+	#wn-dialog .dialog-content .dialog-button {
+		position: absolute;
+		left: 0px;
+		bottom: 0px;
+		right: 0px;
+		height: 60px;
+		padding: 20px;
+		text-align: center;
+	}
+	
+	#wn-dialog .dialog-content .dialog-button button {
+		width: 80px;
+		padding: 8px;
+		margin: 0px 5px;
+		border-radius: 20px;
+		font-size: 16px;
+	}
+	
+	#wn-dialog .dialog-content .dialog-button button:hover {
+		border: 1px solid #309FE6;
+		background-color: #309FE6;
+	}
+</style>
+<div id="wn-dialog">
+	<div class="dialog-content">
+		<p> 请输入名称: </p>
+		<input type="text" />
+		<div class="dialog-button">
+			<button class="ok"> 确认 </button>
+			<button class="cancel"> 取消 </button>
+		</div>
+	</div>
+</div>
+<script>
+	var cancel = $('#wn-dialog .dialog-content .dialog-button .cancel');
+	cancel.click(function(){
+		$('#wn-dialog').hide();
+		$('#wn-dialog .dialog-content .dialog-button .ok').unbind();
+	});
+</script>

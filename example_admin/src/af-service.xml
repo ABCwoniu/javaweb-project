@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- 示例
+	<service name="Hello" class="my.HelloApi" /> 
+	<upload name="BasicFile" class="my.BasicFileUpload" /> 
+	-->
+	<!-- 课程  -->
+	<service name="CourseAdd" class="example.admin.course.CourseAddApi" /> 
+	<service name="CourseDelete" class="example.admin.course.CourseDeleteApi" /> 
+	<service name="CourseEdit" class="example.admin.course.CourseEditApi" /> 
+	
+	<!-- 章节  -->
+	<service name="ChapterSave" class="example.admin.chapter.ChapterSaveApi" /> 
+	
+	<!-- 习题  -->
+	<service name="ExampleSave" class="example.admin.ExampleSaveApi" /> 
+	<service name="ExampleQuery" class="example.admin.ExampleQueryApi" /> 
+	<service name="ExampleDelete" class="example.admin.ExampleDeleteApi" />
+	
+	<!-- 登录  -->
+	<service name="AdminLogin" class="example.admin.login.AdminLoginApi" />
+	<service name="AdminLogout" class="example.admin.login.AdminLogoutApi" />
+	
+	<!-- 修改密码  -->
+	<service name="ChangePassword" class="example.admin.profile.ChangePasswordApi" />
+	
+	<!-- 单一登陆  -->
+	<service name="ConnectionTestPeriod" class="example.admin.login.ConnectionTestPeriodApi" />
+</config>

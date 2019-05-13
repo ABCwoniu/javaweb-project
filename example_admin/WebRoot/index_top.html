@@ -1,0 +1,52 @@
+<!-- *** index_top.html *** -->
+<style>
+
+</style>
+
+<div id='top'>
+	<div class='logo'> 在线题库管理界面 </div>
+	<div class='account' style="display: none;">
+		<img src="images/user_photo.png" />
+		<p> admin </p>
+		<button onclick="G.logout()"> 退出 </button>
+	</div>
+</div>
+<script>
+	var G = {};
+
+	G.init = function() {
+		G.loginShow();
+	}
+
+	G.logout = function() {
+		var req = {};
+		Af.rest('AdminLogout.api', req, function(data) {
+			sessionStorage.setItem("admin", null);
+			location.href = 'login.html';
+		})
+
+	}
+
+	G.loginShow = function() {
+		var admin = JSON.parse(sessionStorage.getItem("admin"));
+		if(admin != null) {
+			var account = $('#top .account');
+			$('p', account).html('[' + admin.username + ']');
+			account.show();
+		}
+	}
+
+	G.singleLogin = function() {
+		var req = {};
+		Af.rest("ConnectionTestPeriod.api", req, function(data) {
+			if(data.status != 0) {
+				clearInterval(G.t);
+				alert("用户在其他地点登陆！请重新登陆");
+				location.href = 'login.html';
+			}
+		});
+	}
+
+	G.init();
+	G.t = setInterval('G.singleLogin()', 1000 * 5);
+</script>

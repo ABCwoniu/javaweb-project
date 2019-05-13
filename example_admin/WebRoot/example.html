@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库-习题管理 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="jquery/afquery.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js" ></script>
+		<script type="text/javascript" src="jquery/afquery.js" ></script>
+		<style>
+			#content .toolbar{
+				padding: 8px;
+				border-bottom: 2px solid #BBBBBB;
+			}
+			#content .toolbar p{
+				display: inline-block;
+				margin-right: 4px;
+				font-weight: 600;
+				font-size: 20px;
+			}
+			#content .toolbar select{
+				height: 36px;
+				padding: 4px;
+				margin-right: 5px;
+				line-height: 36px;
+				font-size: 16px;
+			}
+			#content .toolbar button{
+				margin: 0px 12px;
+				padding: 7px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			#content .toolbar button:hover {
+				border: 1px solid #309FE6;
+				background-color: #309FE6;
+			}
+			#content .example-list .row{
+				padding: 10px;
+				border-bottom: 1px solid #CCCCCC;
+				border-radius: 32px;
+			}
+			#content .example-list .row p{
+				padding: 4px;
+				margin: 4px 10px;
+			}
+		</style>
+		<script>
+			//初始化数据
+			var courses = ${coursesJ};
+			var chapters = ${chaptersJ};
+		</script>
+	</head>
+	<body>
+		<#include '/index_top.html' />
+		<#include '/index_left.html' />
+		
+		<div id="content">
+			<div class="toolbar">
+				<p> 课程: </p>
+				<select class="example-course" onchange="M.chapterQuery(this)">
+				</select>
+				<p> 章节: </p>
+				<select class="example-chapter" onchange="M.exampleQuery(this)">
+				</select>
+				<button onclick="M.addExample()"> 添加习题 </button>
+			</div>
+			<div class="example-list">
+				
+			</div>
+			<div class="example-tp" style="display: none;">
+				<div class="row" iid='{#id}'>
+					<p style="display: inline-block;"> {#chapterTitle} </p>
+					<a href="javascript:void(0);" onclick="M.addExample({#id})"> 编辑 </a>
+					<a href="javascript:void(0);" onclick="M.exampleDelete(this)"> 删除 </a>
+					<p> 难度: {#rank}星 </p>
+					<p style="border-left: 8px solid #309FE6;"> {#contentHtml} </p>
+				</div>
+			</div>
+		</div>
+		<!--加载对话框-->
+		<#include "/confirm_dialog.html" />
+		<script>
+			MENU.select('题库管理');
+			
+			var M = {};
+			
+			M.init = function(){
+				M.showCourse();
+				$('#content .toolbar .example-course').change();
+				$('#content .toolbar .example-chapter').change();
+			}
+			
+			M.showCourse = function(){
+				var tp = new AfTemplate('<option value="{#id}"> {#title}</option>');
+				var target = $('#content .toolbar .example-course');
+				var len = courses.length;
+				
+				for(var i = 0; i < len; i ++){
+					var row = courses[i];
+					target.append(tp.replace(row));
+				}
+			}
+			
+			M.chapterQuery = function(thiz){
+				var course = $(thiz).val();
+				
+				var tp = new AfTemplate('<option value="{#id}"> {#number}: {#title} </option>');
+				var target = $('#content .toolbar .example-chapter');
+				target.html('');
+								
+				var len = chapters.length;
+				for(var i = 0; i < len; i ++){
+					var it = chapters[i];
+					if(course == it.course){
+						target.append(tp.replace(it));
+					}
+				}
+				$('#content .toolbar .example-chapter').change();
+			}
+			
+			M.exampleQuery = function(thiz){
+				var chapterId = $(thiz).val().trim();
+				var req = { 'id' : chapterId };
+				Af.rest('ExampleQuery.api', req, function(data){
+					M.exampleList(data);
+				})
+			}
+			
+			M.exampleList = function(data){
+				var target = $('#content .example-list');
+				target.html('');
+				
+				var chapterTitle = $('#content .toolbar .example-chapter').find('option:selected').text().trim();
+				
+				var tp = new AfTemplate($('#content .example-tp').html());
+				var len = data.length;
+				for(var i = 0; i < len; i ++){
+					var row = data[i];
+					row.chapterTitle = chapterTitle;
+					
+					target.append(tp.replace(row));
+				}
+				
+			}
+			
+			M.addExample = function(){
+				var exampleId = arguments[0];
+				
+				var courseTitle = $('#content .toolbar .example-course').find('option:selected').text().trim();
+				var chapter = $('#content .toolbar .example-chapter').val() - 0;
+				if(exampleId == null)
+					location.href = 'example_edit.sudo?id=' + chapter + '&course=' + courseTitle;
+				else
+					location.href = 'example_edit.sudo?id=' + chapter + '&course=' + courseTitle + '&exampleId=' + exampleId;
+			}
+			
+			M.exampleDelete = function(thiz){
+				var dialog = $('#confirm-dialog');
+				
+				$('.ok', dialog).on('click', function(){
+					dialog.hide();
+					
+					var parent = $(thiz).parent();
+					var id = parent.attr('iid');
+					
+					var req = { 'id' : id };
+					Af.rest('ExampleDelete.api', req, function(data){
+						parent.remove();
+					})
+					
+					$('.ok', dialog).off('click');
+				})
+				
+				dialog.show();				
+			}
+			
+			M.init();
+		</script>
+	</body>
+</html>

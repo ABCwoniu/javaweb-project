@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- 示例
+	<service name="Hello" class="my.HelloApi" /> 
+	<upload name="BasicFile" class="my.BasicFileUpload" /> 
+	<jsx name="BasicFile" class="my.BasicFileUpload" /> 
+	-->
+	<jsx name="exampleData" class="example.ExampleJSX" /> 
+	
+</config>

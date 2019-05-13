@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库-修改密码 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery/afquery.js"></script>
+		<style>
+			#content .change-password {
+				margin: 80px;
+			}
+			
+			#content .change-password .row {
+				padding: 8px;
+				margin: 20px;
+			}
+			
+			#content .change-password .row p {
+				margin: 10px 0px 4px 0px;
+				font-weight: 600;
+				font-size: 16px;
+				color: #444444;
+			}
+			
+			#content .change-password .row input {
+				padding: 8px;
+				font-size: 18px;
+			}
+			
+			#content .change-password .row button {
+				width: 60px;
+				margin: 8px 0px;
+				padding: 7px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			
+			#content .change-password .row button:hover {
+				border: 1px solid #309FE6;
+				background-color: #309FE6;
+			}
+		</style>
+	</head>
+
+	<body>
+		<#include '/index_top.html' />
+		<#include '/index_left.html' />
+
+		<div id="content">
+			<div class="change-password">
+				<div class="row">
+					<p> 请设置新密码: </p>
+					<input type="password" name="newPassword" />
+				</div>
+				<div class="row">
+					<p> 再次输入新密码: </p>
+					<input type="password" name="confPassword" />
+				</div>
+				<div class="row">
+					<button onclick="M.doSubmit()"> 确认 </button>
+				</div>
+			</div>
+		</div>
+		<script>
+			MENU.select('修改密码');
+			
+			var M = {};
+			
+			M.doSubmit = function(){
+				var req = new AfForm('#content .change-password').get();
+				if(! (req.newPassword && req.confPassword)){
+					alert('新密码不能为空');
+					return;
+				}
+				if(req.newPassword !== req.confPassword){
+					alert('两次输入密码不一致');
+					return;
+				}
+				Af.rest('ChangePassword.api', req, function(data){
+					alert('密码修改成功，请重新登录');
+					location.href = 'login.html';
+				})
+			}
+		</script>
+	</body>
+
+</html>

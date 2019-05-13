@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库-章节管理 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="jquery/afquery.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery/afquery.js"></script>
+		<style>
+			#content .info {
+				padding: 10px;
+				font-size: 24px;
+				font-weight: bold;
+			}
+			
+			#content .toolbar {
+				padding: 10px;
+				border-top: 1px solid #BBBBBB;
+				border-bottom: 1px solid #BBBBBB;
+			}
+			
+			#content .toolbar button {
+				margin: 0px 8px;
+				padding: 8px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			
+			#content .toolbar button:hover {
+				border: 1px solid #309FE6;
+				background-color: #309FE6;
+			}
+			
+			#content .chapter_list th {
+				padding: 8px;
+				background-color: #f1f1f1;
+				color: #444;
+			}
+			
+			#content .chapter_list td {
+				padding: 6px;
+			}
+			
+			#content .chapter_list tbody tr:hover {
+				background-color: #fde9c4;
+				color: #444
+			}
+			
+			#content .chapter_list .c1 {
+				width: 50px;
+			}
+			
+			#content .chapter_list .c2 {
+				width: 350px;
+			}
+			
+			#content .chapter_list .c3 {
+				width: 200px;
+			}
+		</style>
+		<script>
+			var course = ${courseJ}; //课程
+			var chapters = ${chaptersJ}; //课程下的章节
+		</script>
+	</head>
+
+	<body>
+		<#include '/index_top.html' />
+		<#include '/index_left.html' />
+
+		<div id="content">
+			<div class="info">
+				当前课程： ${courseJ.title}
+			</div>
+			<div class="toolbar">
+				<button onclick="M.addChapter()"> 添加章节 </button>
+				<button onclick="M.save()"> 保存 </button>
+			</div>
+			<div style="padding: 15px;">
+				<table class="chapter_list">
+					<thead>
+						<tr>
+							<th class="c1"> # </th>
+							<th class="c2"> 章节名称 </th>
+							<th class="c3"> 操作 </th>
+						</tr>
+					</thead>
+					<tbody>
+
+					</tbody>
+					<!--前端动态加载章节模板-->
+					<tfoot style="display: none;">
+						<tr>
+							<td> {#number} </td>
+							<td> {#title} </td>
+							<td iid="{#number}">
+								<a href="javascript:void(0);" onclick="M.editChapter(this)"> 编辑 </a>
+								<a href="javascript:void(0);" onclick="M.deleteChapter(this)"> 删除 </a>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+
+		<!--加载对话框-->
+		<#include "/line_input_dialog.html" />
+		<script>
+			MENU.select('课程管理');
+
+			var M = {};
+			M.chapter_list = []; //存储课程标题
+			M.change = false;//页面关闭提示
+
+			M.init = function() {
+				for(var i = 0; i < chapters.length; i++) {
+					M.chapter_list[i] = chapters[i].title;
+				}
+				M.refresh();
+			}
+
+			M.addChapter = function() {
+				var dialog = $('#wn-dialog');
+				var textInput = $('input', dialog);
+				textInput.val('');
+
+				$('.ok', dialog).on('click', function() {
+					var title = textInput.val().trim();
+					if(!title) {
+						alert("输入不能为空");
+						return;
+					}
+
+					dialog.hide();
+
+					M.chapter_list.push(title);
+					M.refresh();
+					
+					M.change = true;
+					
+					$('.ok', dialog).off('click');//事件置空
+				});
+
+				dialog.show();
+				textInput.focus();
+			}
+
+			M.editChapter = function(thiz) {
+
+				var number = $(thiz).parent().attr('iid');
+				var originalTitle = M.chapter_list[number - 1];
+
+				var dialog = $('#wn-dialog');
+				var textInput = $('input', dialog);
+				textInput.val(originalTitle);
+
+				$('.ok', dialog).on('click', function() {
+					var targetTitle = textInput.val().trim();
+					//判断输入不能为空
+					if(!targetTitle.length) {
+						alert("输入不能为空");
+						return;
+					}
+					if(targetTitle == originalTitle) {
+						alert('标题未发生改变');
+						return;
+					}
+					dialog.hide();
+
+					M.chapter_list[number - 1] = targetTitle;
+					M.refresh();
+					
+					M.change = true;
+					
+					$('.ok', dialog).off('click');
+				});
+
+				dialog.show();
+				textInput.focus();
+			}
+
+			M.deleteChapter = function(thiz) {
+				var number = $(thiz).parent().attr('iid');
+				M.chapter_list.splice(number - 1, 1);
+				M.refresh();
+				
+				M.change = true;
+			}
+
+			M.save = function() {
+				var req = {};
+				req.course = course.id;
+				req.chapters = M.chapter_list;
+				Af.rest('ChapterSave.api', req, function(data) {
+					alert('保存成功');
+					M.change = false;
+				});
+			}
+
+			M.refresh = function() {
+				var target = $('.chapter_list tbody');
+				target.html('');
+
+				var tp = new AfTemplate($('.chapter_list tfoot').html());
+				for(var i = 0; i < M.chapter_list.length; i++) {
+					var it = M.chapter_list[i];
+
+					var row = {};
+					row.number = i + 1;
+					row.title = it;
+
+					target.append(tp.replace(row));
+				}
+			}
+
+			// 关闭窗口时弹出确认提示
+			$(window).bind('beforeunload', function() {
+				// 只有在标识变量M.change为true时，才弹出确认提示
+				if(M.change)
+					return '数据没有保存';
+			});
+
+			M.init();
+		</script>
+	</body>
+
+</html>

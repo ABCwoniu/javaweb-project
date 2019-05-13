@@ -1,0 +1,69 @@
+<style>
+	#confirm-dialog {
+		display: none;
+		position: fixed;
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+		background-color: rgba(128, 128, 128, 0.5);
+		z-index: 1000;
+	}
+	
+	#confirm-dialog .dialog-content {
+		position: relative;
+		width: 500px;
+		height: 200px;
+		margin: 200px auto 0px auto;
+		padding: 20px;
+		background-color: white;
+		border: 1px solid #BBBBBB;
+		border-radius: 8px;
+		box-shadow: 0px 0px 20px #888888;
+	}
+	
+	#confirm-dialog .dialog-content p {
+		margin-top: 20px;
+		font-size: 20px;
+		text-align: center;
+	}
+	
+	#confirm-dialog .dialog-content .dialog-button {
+		position: absolute;
+		left: 0px;
+		bottom: 0px;
+		right: 0px;
+		height: 60px;
+		padding: 20px;
+		text-align: center;
+	}
+	
+	#confirm-dialog .dialog-content .dialog-button button {
+		width: 80px;
+		padding: 8px;
+		margin: 0px 5px;
+		border-radius: 20px;
+		font-size: 16px;
+	}
+	
+	#confirm-dialog .dialog-content .dialog-button button:hover {
+		border: 1px solid #309FE6;
+		background-color: #309FE6;
+	}
+</style>
+<div id="confirm-dialog">
+	<div class="dialog-content">
+		<p> 是否确认操作？ </p>
+		<div class="dialog-button">
+			<button class="ok"> 确认 </button>
+			<button class="cancel"> 取消 </button>
+		</div>
+	</div>
+</div>
+<script>
+	var confirmCancel = $('#confirm-dialog .dialog-content .dialog-button .cancel');
+	confirmCancel.click(function(){
+		$('#confirm-dialog').hide();
+		$('#confirm-dialog .dialog-content .dialog-button .ok').unbind();
+	});
+</script>

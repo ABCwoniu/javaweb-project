@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title> 习题列表 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery/afquery.js"></script>
+		<style>
+			#main {
+				width: 1200px;
+				margin: 10px auto;
+				padding: 8px;
+			}
+			
+			#main .top {
+				margin-bottom: 40px;
+			}
+			
+			#main .top h1 {
+				margin: 0px;
+				font-size: 44px;
+			}
+			
+			#main a {
+				display: inline-block;
+				margin: 8px;
+				font-size: 20px;
+				color: #338ED0;
+			}
+			
+			#main .titlebar {
+				padding: 8px;
+				background-color: #F1F1F1;
+				border: 1px solid #444444;
+				border-radius: 16px;
+				color: #338ED0;
+			}
+			
+			#main p {
+				display: inline-block;
+				margin: 0px 20px;
+				font-weight: 600;
+				font-size: 20px;
+				font-family: "楷体";
+				color: #444444;
+			}
+			
+			#main .content {
+				padding-top: 32px;
+			}
+			
+			#main .content .example {
+				padding: 4px;
+				border-top: 16px solid #727C8C;
+				border-radius: 16px;
+			}
+			
+			#main .content .example .row {
+				margin: 5px 0px;
+			}
+			
+			#main .content .example .row p {
+				margin-left: 0px;
+				color: #888888;
+			}
+			#main .content .example .row span{
+				display: block;
+				padding: 20px;
+				background-color: #F1F1F1;
+				border-radius: 8px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="main">
+			<div class="top">
+				<h1> 在线题库 </h1>
+				<a href="index.html"> 重新查询 </a>
+			</div>
+			<div class="titlebar">
+				<p> 课程: </p>${course.title}
+				<p> 章节: </p>第${chapter.number}章-${chapter.title}
+			</div>
+			<div class="content">
+				<#list examples as r>
+					<div class="example">
+						<div class="example-chapter row">
+							<p> 章节: </p>第${chapter.number}章-${chapter.title}
+						</div>
+						<div class="example-rank row">
+							<p> 难度: </p>
+							<#list 1..(r.rank) as n>
+								★
+							</#list>
+						</div>
+						<div class="example-content row">
+							<p> 题目: </p>
+							<span> ${r.contentHtml} </span>
+							<a class="answer" style="font-size: 16px;" href="javascript:void(0);" onclick="M.showAnswer(this)"> 答案 </a>
+						</div>
+						
+						<div class="example-answer row" style="display: none;">
+							<span> ${r.answerHtml} </span>
+						</div>
+					</div>
+				</#list>
+			</div>
+		</div>
+		<script>
+			var M = {};
+			
+			M.showAnswer = function(thiz){
+				var row = $(thiz).parent().parent();
+				$('.example-answer', row).toggle(500);
+				
+			}
+		</script>
+	</body>
+
+</html>

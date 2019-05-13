@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库-课程管理 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="jquery/afquery.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery/afquery.js"></script>
+		<style>
+			#content .course_top {
+				width: 100%;
+				height: 60px;
+				padding-left: 30px;
+				line-height: 60px;
+				border-bottom: 2px solid #CCCCCC;
+			}
+			
+			#content .course_top button {
+				padding: 8px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			
+			#content .course_top button:hover {
+				border: 1px solid #309FE6;
+				background-color: #309FE6;
+			}
+			
+			#content .course {
+				width: 270px;
+				height: 60px;
+				padding-left: 20px;
+				line-height: 60px;
+				margin: 20px 15px;
+				background-color: #309FE6;
+				border-radius: 20px;
+				float: left;
+			}
+			
+			#content .course a {
+				display: inline-block;
+				width: 180px;
+				margin: 0px 5px;
+				text-decoration: none;
+				font-size: 20px;
+				color: white;
+			}
+			#content .course a:hover{
+				color: #444444;
+			}
+			#content .course .img-button:hover{
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<#include '/index_top.html' />
+		<#include '/index_left.html' />
+		<!--mvc动态加载课程-->
+		<div id="content">
+			<div class="course_top">
+				<button onclick="M.showDialog()"> 添加课程 </button>
+			</div>
+			<#list courses as r>
+				<div class="course" iid="${r.id}">
+					<img src="images/course.png" />
+					<a href="chapter.sudo?id=${r.id}"> ${r.title} </a>
+					<img class="img-button" src="images/edit.png" onclick="M.editCourse(this)" />
+					<img class="img-button" src="images/delete.png" onclick="M.deleteCourse(this)" />
+				</div>
+			</#list>
+		</div>
+		<!--加载对话框-->
+		<#include "/line_input_dialog.html" />
+		<#include "/confirm_dialog.html" />
+		<script>
+			MENU.select('课程管理');
+
+			var M = {};
+
+			M.showDialog = function() {
+				var dialog = $('#wn-dialog'); //对话框
+				var textInput = $('input', dialog); //输入框
+				textInput.val(''); //清空
+				//添加确定事件
+				$('.ok', dialog).on('click', function() {
+					var title = textInput.val().trim();
+					//判断输入不能为空
+					if(!title.length) {
+						alert("输入不能为空");
+						return;
+					}
+
+					dialog.hide();
+
+					var req = {
+						'title': title
+					};
+					//添加课程
+					Af.rest('CourseAdd.api', req, function(data) {
+						alert("添加成功");
+						location.reload();
+					});
+					$('.ok', dialog).off('click');
+				})
+
+				//显示对话框
+				dialog.show();
+				textInput.focus();
+			}
+
+			M.deleteCourse = function(thiz) {
+				var dialog = $('#confirm-dialog');
+
+				$('.ok', dialog).one('click', function() {
+					dialog.hide();
+
+					var id = $(thiz).parent().attr('iid');
+					var req = {
+						'id': id
+					};
+					Af.rest('CourseDelete.api', req, function(data) {
+						alert('删除成功');
+						$(thiz).parent().remove();
+					})
+				})
+
+				dialog.show();
+
+			}
+
+			M.editCourse = function(thiz) {
+				var row = $(thiz).parent(); //父级div
+				var originalTitle = $('a', row).text().trim(); //课程标题
+
+				var dialog = $('#wn-dialog');
+				var textInput = $('input', dialog);
+				textInput.val(originalTitle);
+
+				$('.ok', dialog).on('click', function() {
+					var targetTitle = textInput.val().trim();
+					//判断输入不能为空
+					if(!targetTitle.length) {
+						alert("输入不能为空");
+						return;
+					}
+					if(targetTitle == originalTitle) {
+						alert('标题未发生改变');
+						return;
+					}
+
+					dialog.hide();
+
+					var id = row.attr('iid');
+					var req = {
+						'id': id,
+						'title': targetTitle
+					};
+					//添加课程
+					Af.rest('CourseEdit.api', req, function(data) {
+						alert("修改成功");
+						location.reload();
+					});
+					$('.ok', dialog).off('click');
+				})
+
+				dialog.show();
+				textInput.focus();
+			}
+		</script>
+	</body>
+
+</html>

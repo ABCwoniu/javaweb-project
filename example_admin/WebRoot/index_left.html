@@ -1,0 +1,45 @@
+
+	<!-- *** index_left.html *** -->
+	
+	<style>
+	
+	</style>
+	
+	<!-- 左侧 -->
+	<div id='left'>
+		<div class='menu'>
+			<img src='images/home.png'>
+			<a class='menu-item' href='index.jhtml'> 首页 </a>
+		</div>
+		
+		<div class='menu'>
+			<a class='menu-item' href='course.sudo'> 课程管理  </a>
+		</div>
+		
+		<div class='menu'>
+			<a class='menu-item' href='example.sudo'> 题库管理  </a>
+		</div>
+		
+		<div class='menu'>
+			<a class='menu-item' href='profile.jhtml'> 修改密码  </a>
+		</div>			
+	</div>
+	
+	<script>
+		var MENU = {};
+		
+		// item 即为菜单项的文本
+		MENU.select = function( item )
+		{
+			var eee = $('.menu-item');
+			for( var e of eee)
+			{
+				var link_text = $(e).text().trim(); // 超链接文本
+				if(link_text == item)
+					$(e).addClass('active');
+				else
+					$(e).removeClass('active');
+			}
+		};
+	</script>
+	

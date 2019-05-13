@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库-习题编辑 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="jquery/afquery.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js" ></script>
+		<script type="text/javascript" src="jquery/afquery.js" ></script>
+		<style>
+			#content .toolbar{
+				padding: 8px;
+				border-bottom: 1px solid #BBBBBB;
+			}
+			#content .toolbar button{
+				width: 60px;
+				margin: 0px 8px;
+				padding: 7px;
+				border-radius: 5px;
+				font-size: 16px;
+			}
+			#content .toolbar button:hover {
+				border: 1px solid #309FE6;
+				background-color: #309FE6;
+			}
+			#content .example-edit{
+				padding: 10px;
+			}
+			#content .example-edit .row{
+				margin: 8px;
+			}
+			#content .example-edit .row p{
+				display: inline-block;
+				margin-right: 8px;
+				font-weight: bold;
+			}
+			#content .example-edit .row select{
+				width: 200px;
+				height: 40px;
+				padding: 4px;
+				font-size: 16px;
+			}
+			#content .example-edit .row textarea{
+				width: 1000px;
+				height: 200px;
+				padding: 10px;
+				font-size: 16px;
+			}
+		</style>
+		<script>
+			//初始化数据
+			var chapter = ${chapterJ};
+			var example = ${exampleJ ! 0};
+		</script>
+	</head>
+	<body>
+		<#include '/index_top.html' />
+		<#include '/index_left.html' />
+		
+		<div id="content">
+			<div class="toolbar">
+				<button onclick="M.goBack()"> 返回 </button>
+				<button onclick="M.saveExample()"> 保存 </button>
+			</div>
+			<div class="example-edit">
+				<div class="row">
+					<p> 课程 </p> ${course}
+				</div>
+				<div class="row">
+					<p> 章节 </p> 第${chapterJ.number?c}章-${chapterJ.title}
+				</div>
+				<div class="row">
+					<p> 难度 </p>
+					<select>
+						<option value="1"> 1星 ★ </option>
+						<option value="2"> 2星 ★★ </option>
+						<option value="3"> 3星 ★★★ </option>
+						<option value="4"> 4星 ★★★★ </option>
+						<option value="5"> 5星 ★★★★★ </option>
+					</select>
+				</div>
+				<div class="row">
+					<p style="vertical-align: top;"> 题目 </p> 
+					<textarea class="example-content"></textarea>
+				</div>
+				<div class="row">
+					<p style="vertical-align: top;"> 答案 </p> 
+					<textarea class="example-answer"></textarea>
+				</div>
+			</div>
+		</div>
+		<script>
+			MENU.select('题库管理');
+			
+			var M = {};
+			
+			M.init = function(){
+				if(example){
+					var f = $('#content .example-edit .row');
+					$('select', f).val(example.rank);
+					$('.example-content', f).val(example.content);
+					$('.example-answer', f).val(example.answer);
+				}
+			}
+			
+			M.saveExample = function(){
+				var rank = $('.row select').val().trim();
+				var content = $('.row .example-content').val().trim();
+				var answer = $('.row .example-answer').val().trim();
+				
+				if(! (content && answer)){
+					alert('题目和内容不能为空');
+					return;
+				}
+				
+				var req = {};
+				req.chapter = chapter;
+				req.rank = rank;
+				req.content = content;
+				req.answer = answer;
+				if(example){
+					req.id = example.id;
+				}
+				
+				Af.rest('ExampleSave.api', req, function(data){
+					alert('操作成功');
+					location.href = 'example.sudo';
+				})
+			}
+			
+			M.goBack = function(){
+				location.href = 'example.sudo';
+			}
+			
+			M.init();
+		</script>
+	</body>
+</html>

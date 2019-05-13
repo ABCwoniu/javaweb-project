@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title> 在线题库-管理界面 </title>
+		<link rel="stylesheet" href="css/common.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" href="jquery/afquery.css" />
+		<script type="text/javascript" src="jquery/jquery.min.js" ></script>
+		<script type="text/javascript" src="jquery/afquery.js" ></script>
+		<style>
+			#content .welcome{
+				margin-top: 200px;
+				text-align: center;
+				font-size: 64px;
+				font-family: '楷体';
+				color: blue;
+			}
+		</style>
+	</head>
+	<body>
+		<#include '/index_top.html' />
+		<#include '/index_left.html' />
+		
+		<div id="content">
+			<h1 class="welcome"> 欢迎进入<br /><br />习题管理界面 </h1>
+		</div>
+		<script>
+			MENU.select('首页');
+		</script>
+	</body>
+</html>

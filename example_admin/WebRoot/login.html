@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title> 管理员登录 </title>
+		<script type="text/javascript" src="jquery/jquery.min.js"></script>
+		<script type="text/javascript" src="jquery/afquery.js"></script>
+
+		<style>
+			body {
+				margin: 0px;
+				background-color: #309FE6;
+			}
+			/* 登录面板 */
+			
+			#login {
+				background-color: #FFF;
+				margin: 10px auto;
+				width: 300px;
+				padding: 30px;
+			}
+			/* 非输入行 */
+			
+			#login .line {
+				padding: 10px;
+			}
+			/* 输入行 */
+			
+			#login .form-line {
+				border: 1px solid #e7e7eb;
+				padding: 10px;
+			}
+			/* 输出行里的图片*/
+			
+			#login .form-line img {
+				vertical-align: middle;
+			}
+			/* 输出行里的人的控件*/
+			
+			#login .form-line input {
+				vertical-align: middle;
+				width: calc(100% - 50px);
+				/* 占据剩余空间 */
+				border: 0px;
+				/* 不显示边框 */
+				padding: 4px;
+				outline: none;
+				/* 焦点状态时无边框 */
+			}
+			/* 登录按钮 */
+			
+			#login .submit {
+				width: 120px;
+				padding: 8px;
+				color: #fff;
+				background-color: #4CB650;
+				border: 1px solid;
+				border-radius: 2px;
+				outline: none;
+				/* 焦点状态时无边框 */
+			}
+			
+			#login .submit:hover {
+				background-color: #2F9833;
+			}
+			/* 底部 */
+			
+			#foot {
+				position: fixed;
+				bottom: 0px;
+				width: 100%;
+				background-color: rgba(255, 255, 255, 0.5);
+				text-align: center;
+				padding: 6px;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<!-- 第1行 -->
+		<div style='text-align: center; margin: 50px auto 30px auto;'>
+			<label style='font-size:20px; font-family: 微软雅黑; color:#fff;'> 
+				在 线 题 库 管 理 界 面 
+			</label>
+		</div>
+
+		<!-- 第2行 -->
+		<div id='login'>
+			<div class='line' style='text-align: center;margin-bottom: 20px;color:#444;'>
+				管理员登录
+			</div>
+			<div class='form-line'>
+				<img src='images/user.png'>
+				<input name='username' type='text' placeholder='管理员账号'>
+			</div>
+			<div class='form-line'>
+				<img src='images/password.png'>
+				<input name='password' type='password' placeholder='密码' onkeydown="M.enterDown(event)">
+			</div>
+			<div class='line' style='text-align: right;'>
+				<button class='submit' onclick='M.login()'> 登录 </button>
+			</div>
+		</div>
+
+		<!-- 第3行 -->
+		<div id='foot'>
+			Java学习指南系列 - 网站项目教学 - http://afanihao.cn - 阿发你好
+		</div>
+
+	</body>
+	<script>
+		var M = {};
+		M.login = function() {
+			var req = new AfForm('#login').get();
+			if(!(req.username && req.password)){
+				alert('用户名和密码不能为空');
+				return;
+			}
+			Af.rest('AdminLogin.api', req, function(data) {
+				sessionStorage.setItem("admin", JSON.stringify(data));
+				location.href = 'index.jhtml';
+			})
+		}
+		
+		M.enterDown = function(e){
+			if(e.keyCode == 13){
+				M.login();
+			}
+		}
+	</script>
+
+</html>
